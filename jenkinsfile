@@ -8,13 +8,15 @@ pipeline{
             agent any
             steps{
                 git branch: 'dev', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git' 
-                stash(name: 'reactcontainer', includes: 'dockerfile package.json', allowEmpty: true)       
+                stash(name: 'react-dockerfile', includes: 'dockerfile', allowEmpty: true)
+                stash(name: 'react-packagefile',includes: 'package.json', allowEmpty: true)       
             }
         }
         stage("Unstash and Packaging build"){           
             agent{ label 'jenkins-agent-nexus'}
             steps{
-                unstash(name: 'reactcontainer')
+                unstash(name: 'react-dockerfile')
+                unstash(name: 'react-packagefile')
                 script{
                   dockerImage = docker.build imageName
                 }
