@@ -48,7 +48,7 @@ pipeline{
                         docker pull ${REGISTRYIPPORT}/${imageName}:${VERSION}
                         docker tag ${REGISTRYIPPORT}/${imageName}:${VERSION} ${imageName}
                         docker rmi ${REGISTRYIPPORT}/${imageName}:${VERSION}
-                        docker run -d --name reactapp -p 3030:3000 ${imageName}
+                        docker run -d --name reactapp -p 3000:3000 ${imageName}
                         '''
                     }
                     
