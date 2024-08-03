@@ -38,5 +38,22 @@ pipeline{
                 }
             }
         }
+        stage("Deploy Image on K8s server"){
+            agent {label 'K8s-Master'}
+            steps{
+                script{
+                   withCredentials([string(credentialsId: 'nexus_image_test', variable: 'img_nexus_data')]) {
+                        sh '''
+                        docker login -u admin -p nexus ${REGISTRYIPPORT}
+                        docker pull ${REGISTRYIPPORT}/${imageName}:${VERSION}
+                        docker tag ${REGISTRYIPPORT}/${imageName}:${VERSION} ${imageName}
+                        docker rmi ${REGISTRYIPPORT}/${imageName}:${VERSION}
+                        docker run -d --name reactapp -p 3030:3000 ${imageName}
+                        '''
+                    }
+                    
+                }
+            }
+        }
     }
 }
