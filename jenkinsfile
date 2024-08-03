@@ -12,20 +12,21 @@ pipeline{
         REGISTRYIPPORT="34.131.110.34:8082"
     }
     stages{
-        stage("checkout react repos from git"){
-            agent any
-            steps{
-                git branch: 'dev', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git' 
-                stash(name: 'react-dockerfile', includes: 'dockerfile', allowEmpty: true)
-                stash(name: 'react-packagefile',includes: 'package.json', allowEmpty: true)       
-            }
-        }
-        stage("Unstash and Packaging build"){           
+        // stage("checkout react repos from git"){
+        //     agent any
+        //     steps{
+        //         git branch: 'dev', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git' 
+        //         stash(name: 'react-dockerfile', includes: 'dockerfile', allowEmpty: true)
+        //         stash(name: 'react-packagefile',includes: 'package.json', allowEmpty: true)       
+        //     }
+        // }
+        stage("Git checkout and Packaging build"){           
             agent{ label 'jenkins-agent-nexus'}
             steps{
-                unstash(name: 'react-dockerfile')
-                unstash(name: 'react-packagefile')
+                // unstash(name: 'react-dockerfile')
+                // unstash(name: 'react-packagefile')
                 script{
+                  git branch: 'dev', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git' 
                   dockerImage = docker.build imageName
                   sh 'll'
                 }
