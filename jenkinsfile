@@ -3,6 +3,14 @@ pipeline{
     options {
         skipDefaultCheckout true
     }
+    environment {
+        dockerImage = ''
+        imageName = 'react=spring-mongo'
+        VERSION = "${env.BUILD_ID}"
+        USERNAME = 'admin'
+        registryCredentials = "Nexus-Cred"
+        REGISTRYIPPORT="34.131.110.34:8082"
+    }
     stages{
         stage("checkout react repos from git"){
             agent any
