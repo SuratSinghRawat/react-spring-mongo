@@ -5,7 +5,7 @@ pipeline{
     }
     environment {
         dockerImage = ''
-        imageName = 'react=spring-mongo'
+        imageName = 'react-spring-mongo'
         VERSION = "${env.BUILD_ID}"
         USERNAME = 'admin'
         registryCredentials = "Nexus-Cred"
