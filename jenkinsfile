@@ -20,16 +20,22 @@ pipeline{
                 // stash(name: 'react-packagefile',includes: 'package.json', allowEmpty: true)       
             }
         }
-        stage("Git checkout and Packaging build"){           
+        stage("Git checkout and Packaging build and upload on Nexus"){           
             agent{ label 'jenkins-agent-nexus'}
             steps{
                 unstash(name: 'react')
                 // unstash(name: 'react-packagefile')
                 script{
-                  dockerImage = docker.build imageName
-                  sh 'ls'
+                  //dockerImage = docker.build imageName
+                  withCredentials([string(credentialsId: 'nexus_image_test', variable: 'img_nexus_data')]) {
+                       sh '''
+                        docker build -t ${REGISTRYIPPORT}/${imageName}:${VERSION} .
+                        docker login -u admin -p nexus ${REGISTRYIPPORT}
+                        docker push ${REGISTRYIPPORT}/${imageName}:${VERSION}
+                        docker rmi ${REGISTRYIPPORT}/${imageName}:${VERSION}                        
+                       '''
+                    }
                 }
-
             }
         }
     }
