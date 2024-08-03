@@ -1,0 +1,59 @@
+pipeline{
+    agent none
+    options {
+        skipDefaultCheckout true
+    }
+    environment {
+        dockerImage = ''
+        imageName = 'react-spring-mongo'
+        VERSION = "${env.BUILD_ID}"
+        USERNAME = 'admin'
+        registryCredentials = "Nexus-Cred"
+        REGISTRYIPPORT="34.131.110.34:8082"
+    }
+    stages{
+        stage("checkout react repos from git"){
+            agent any
+            steps{
+                git branch: 'dev', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git' 
+                stash(name: 'react', includes: '**', allowEmpty: true)
+                // stash(name: 'react-packagefile',includes: 'package.json', allowEmpty: true)       
+            }
+        }
+        stage("Git checkout and Packaging build and upload on Nexus"){           
+            agent{ label 'jenkins-agent-nexus'}
+            steps{
+                unstash(name: 'react')
+                // unstash(name: 'react-packagefile')
+                script{
+                  //dockerImage = docker.build imageName
+                  withCredentials([string(credentialsId: 'nexus_image_test', variable: 'img_nexus_data')]) {
+                       sh '''
+                        docker build -t ${REGISTRYIPPORT}/${imageName}:${VERSION} .
+                        docker login -u admin -p nexus ${REGISTRYIPPORT}
+                        docker push ${REGISTRYIPPORT}/${imageName}:${VERSION}
+                        docker rmi ${REGISTRYIPPORT}/${imageName}:${VERSION}                        
+                       '''
+                    }
+                }
+            }
+        }
+        stage("Deploy Image on K8s server"){
+            agent {label 'K8s-Master'}
+            steps{
+                script{
+                   withCredentials([string(credentialsId: 'nexus_image_test', variable: 'img_nexus_data')]) {
+                        sh '''
+                        docker login -u admin -p nexus ${REGISTRYIPPORT}
+                        docker pull ${REGISTRYIPPORT}/${imageName}:${VERSION}
+                        docker tag ${REGISTRYIPPORT}/${imageName}:${VERSION} ${imageName}
+                        docker rmi ${REGISTRYIPPORT}/${imageName}:${VERSION}
+                        docker run -d --name reactapp -p 3030:3000 ${imageName}
+                        '''
+                    }
+                    
+                }
+            }
+        }
+    }
+}
