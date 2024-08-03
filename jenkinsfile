@@ -1,0 +1,17 @@
+pipeline{
+    agent none
+    options {
+        skipDefaultCheckout true
+    }
+    stages{
+        stage("checkout react repos from git"){
+            agent any
+            steps{
+                git branch: 'dev', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git'                
+                script{
+                    bat 'dir'
+                }
+            }
+        }
+    }
+}
