@@ -27,7 +27,7 @@ pipeline{
                 // unstash(name: 'react-packagefile')
                 script{
                   dockerImage = docker.build imageName
-                  sh 'll'
+                  sh 'ls'
                 }
 
             }
