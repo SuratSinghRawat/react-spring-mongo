@@ -8,5 +8,5 @@
     - name: start docker
       service: name=docker state=started
     - name: build docker file
-      command: chdir=/usr/ansible/workspace/Devops-Project-1_Ansible/ docker build -t reactapp:1 .
+      command: chdir=/usr/ansible/workspace/Devops-Project-1_Ansible docker build -t reactapp:1 .
     
