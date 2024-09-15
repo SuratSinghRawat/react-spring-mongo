@@ -1,7 +1,7 @@
 ---
 - hosts: webservers
   become: true
-  become_user: root
+  become_user: surat
   tasks:
     - name: install docker
       apt: name=docker state=present
