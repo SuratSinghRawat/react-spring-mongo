@@ -7,6 +7,8 @@
       apt: name=docker state=present
     - name: start docker
       service: name=docker state=started
+    - name: deploy html file
+      copy: src=/usr/ansible/workspace/Devops-Project-1_Ansible/ dest=/usr/ansible/jenkins-agent/Devops-Project-1_Ansible/
     - name: build docker file
-      command: chdir=/usr/ansible/workspace/Devops-Project-1_Ansible docker build -t reactapp:1 .
+      command: chdir=/usr/jenkins-agent/workspace/Devops-Project-1_Ansible docker build -t reactapp:1 .
     

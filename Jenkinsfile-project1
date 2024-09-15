@@ -22,7 +22,7 @@ pipeline
         }
         stage('Ansible playbook')
         {
-            agent{label 'jenkins-agent-sonar'}
+            agent{label 'ansible'}
             steps{
                 unstash(name: 'git-sonar')
                 sh 'ls'
