@@ -8,7 +8,7 @@ pipeline
         stage("checkout from git and stash"){
             agent any
             steps{
-                git branch: 'main', url: 'https://github.com/SuratSinghRawat/ansible-deployment.git'                
+                git branch: 'main', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git'                
                 stash(name: 'git-clone', includes: '**', allowEmpty: true)
             }
         }
