@@ -1,0 +1,15 @@
+---
+- hosts: envtest
+  become: true
+  become_user: root
+  tasks:
+    - name: install docker
+      package: name=docker state=present
+    - name: start docker
+      service: name=docker state=started
+    - name: copy project code
+      copy: src=/usr/ansible/workspace/Devops-Project-1_Ansible/ dest=/usr/envtest/workspace/Devops-Project-1_Ansible/
+    - name: build docker file
+      command: chdir=/usr/jenkins-agent/workspace/Devops-Project-1_Ansible docker build -t reactapp:1 .
+    - name: create container
+      command: docker run -itd -P reactapp:1
