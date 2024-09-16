@@ -1,2 +1,2 @@
-[webservers]
-34.131.140.73 ansible_user=surat
+[env-test]
+34.131.176.161 
