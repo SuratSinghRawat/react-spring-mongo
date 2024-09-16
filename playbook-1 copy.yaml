@@ -10,6 +10,6 @@
     - name: copy project code
       copy: src=/usr/ansible/workspace/Devops-Project-1_Ansible/ dest=/usr/envtest/workspace/Devops-Project-1_Ansible/
     - name: build docker file
-      command: chdir=/usr/jenkins-agent/workspace/Devops-Project-1_Ansible docker build -t reactapp:1 .
+      command: chdir=/usr/envtest/workspace/Devops-Project-1_Ansible docker build -t reactapp:1 .
     - name: create container
       command: docker run -itd -P reactapp:1
