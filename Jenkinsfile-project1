@@ -17,14 +17,14 @@ pipeline
             steps{
                 unstash(name: 'git-clone')
                 sh 'ls'
-                stash(name: 'git-sonar', includes: '**', allowEmpty: true)
+                // stash(name: 'git-sonar', includes: '**', allowEmpty: true)
             }
         }
         stage('Ansible playbook')
         {
             agent{label 'ansible'}
             steps{
-                unstash(name: 'git-sonar')
+                //unstash(name: 'git-sonar')
                 sh 'ls'
                 ansiblePlaybook become: true, becomeUser: 'surat', credentialsId: 'gcp-ansiblehost', disableHostKeyChecking: true, installation: 'ansible', inventory: 'dev.inv', playbook: 'playbook-1.yaml', vaultTmpPath: ''
             }
