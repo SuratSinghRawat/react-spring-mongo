@@ -19,7 +19,7 @@ useEffect(() => {
   async function  Load()
   {
      const result = await axios.get(
-         "http://localhost:8088/api/v1/student/getAll");
+         "http://34.131.228.52:8088/api/v1/student/getAll");
          setUsers(result.data);
          console.log(result.data);
   }
@@ -31,7 +31,7 @@ useEffect(() => {
         event.preventDefault();
     try
         {
-         await axios.post("http://localhost:8088/api/v1/student/save",
+         await axios.post("http://34.131.228.52:8088/api/v1/student/save",
         {
         studentname: studentname,
         studentadd: studentadd,
@@ -61,7 +61,7 @@ useEffect(() => {
  
    async function DeleteStudent(studentid)
    {
-        await axios.delete("http://localhost:8088/api/v1/student/delete/" + studentid); 
+        await axios.delete("http://34.131.228.52:8088/api/v1/student/delete/" + studentid); 
         alert("Student deleted Successfully");
         Load();
    }
@@ -72,7 +72,7 @@ useEffect(() => {
  
    try
        {
-        await axios.put("http://localhost:8088/api/v1/student/edit/" + studentid ,
+        await axios.put("http://34.131.228.52:8088/api/v1/student/edit/" + studentid ,
        {
 
         studentname: studentname,
