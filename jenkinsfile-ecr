@@ -12,18 +12,21 @@ pipeline{
         // REGISTRYIPPORT="34.131.110.34:8082"
     }
     stages{
-        stage("React::Git checkout on Nexus VM"){
-            agent{ label 'jenkins-agent-nexus'}
+        stage("React::Git checkout at local machine"){
+            agent any
             steps{
                 git branch: 'dev', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git' 
-                //stash(name: 'react', includes: '**', allowEmpty: true)
-                // stash(name: 'react-packagefile',includes: 'package.json', allowEmpty: true)       
+                dir('../react-image-ecr-helm')
+                {
+                    stash(name: 'react', includes: '**', allowEmpty: true)
+                }
+                
             }
         }
-        stage("Packaging build on Nexus VM"){           
+        stage("Unstash and Packaging build on Nexus VM"){           
             agent{ label 'jenkins-agent-nexus'}
             steps{
-                //unstash(name: 'react')
+                unstash(name: 'react')
                 // unstash(name: 'react-packagefile')
                 script{
                   sh '''
