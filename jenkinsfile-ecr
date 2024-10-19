@@ -1,0 +1,58 @@
+pipeline{
+    agent none
+    options {
+        skipDefaultCheckout true
+    }
+    environment {
+        // dockerImage = ''
+        IMAGE_NAME = 'react-spring-mongo'
+        IMAGE_TAG = "${env.BUILD_ID}"
+        // USERNAME = 'admin'
+        // registryCredentials = "Nexus-Cred"
+        // REGISTRYIPPORT="34.131.110.34:8082"
+    }
+    stages{
+        stage("React::Git checkout on Nexus VM"){
+            agent{ label 'jenkins-agent-nexus'}
+            steps{
+                git branch: 'dev', url: 'https://github.com/SuratSinghRawat/react-spring-mongo.git' 
+                //stash(name: 'react', includes: '**', allowEmpty: true)
+                // stash(name: 'react-packagefile',includes: 'package.json', allowEmpty: true)       
+            }
+        }
+        stage("Packaging build on Nexus VM"){           
+            agent{ label 'jenkins-agent-nexus'}
+            steps{
+                //unstash(name: 'react')
+                // unstash(name: 'react-packagefile')
+                script{
+                  sh '''
+                   docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                   aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 211125636900.dkr.ecr.ap-south-1.amazonaws.com
+                   docker tag ${IMAGE_NAME}:${IMAGE_TAG} 211125636900.dkr.ecr.ap-south-1.amazonaws.com/react-spring-mongo/springapp:${IMAGE_TAG}
+                   docker push 211125636900.dkr.ecr.ap-south-1.amazonaws.com/react-spring-mongo/springapp:${IMAGE_TAG}
+                   docker rmi 211125636900.dkr.ecr.ap-south-1.amazonaws.com/react-spring-mongo/springapp:${IMAGE_TAG} ${IMAGE_NAME}:${IMAGE_TAG}
+
+                  '''
+                }
+            }
+        }
+        // stage("Deploy Image on K8s server"){
+        //     agent {label 'K8s-Master'}
+        //     steps{
+        //         script{
+        //            withCredentials([string(credentialsId: 'nexus_image_test', variable: 'img_nexus_data')]) {
+        //                 sh '''
+        //                 docker login -u admin -p nexus ${REGISTRYIPPORT}
+        //                 docker pull ${REGISTRYIPPORT}/${imageName}:${VERSION}
+        //                 docker tag ${REGISTRYIPPORT}/${imageName}:${VERSION} ${imageName}
+        //                 docker rmi ${REGISTRYIPPORT}/${imageName}:${VERSION}
+        //                 docker run -d --name reactapp -p 3000:3000 ${imageName}
+        //                 '''
+        //             }
+                    
+        //         }
+        //     }
+        // }
+    }
+}
