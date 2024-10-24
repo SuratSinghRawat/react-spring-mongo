@@ -12,7 +12,8 @@ function Student()
   const PROTOCAL =process.env.REACT_APP_PROD_PROTOCAL
   const IP = process.env.REACT_APP_PROD_IP
   const PORT = process.env.REACT_APP_PROD_PORT
-  const BACKENDAPI = PROTOCAL+"://"+IP+":"+PORT
+  //const BACKENDAPI = PROTOCAL + "://" + IP + ":" + PORT
+  const BACKENDAPI=process.env.REACT_APP_API_BASE_URL
 
  
 useEffect(() => {
@@ -23,7 +24,7 @@ useEffect(() => {
   async function  Load()
   {
     const result = await axios.get(
-         BACKENDAPI + "/api/v1/student/getAll");      
+      BACKENDAPI + "/api/v1/student/getAll");      
     //"http://34.131.228.52:8088/api/v1/student/getAll");    
          setUsers(result.data);
          console.log(result.data);
